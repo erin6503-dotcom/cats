@@ -126,9 +126,9 @@
             pointer-events: none;
             z-index: 10;
         }
-        @keyframes flyRight {
-            from { transform: translateX(-50px) translateY(0); }
-            to { transform: translateX(110vw) translateY(-30px); }
+        @keyframes flyLeft {
+            from { transform: translateX(10vw) translateY(0); }
+            to { transform: translateX(-120vw) translateY(-30px); }
         }
 
         /* 驚喜氣球動畫 */
@@ -161,10 +161,15 @@
         }
         .falling-coin {
             position: absolute;
-            font-size: 3rem;
+            font-size: 3.5rem;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             cursor: pointer;
             z-index: 75;
-            animation: fallDown 2.5s linear forwards;
+            animation: fallDown 3.5s linear forwards;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
 
@@ -223,7 +228,8 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
-        .cat-transition { transition: left 0.8s ease-in-out, bottom 0.8s ease-in-out; }
+        /* 配合更寬廣的移動範圍，將動畫過渡時間從 0.8s 調整為 1s，讓移動更平滑 */
+        .cat-transition { transition: left 1s ease-in-out, bottom 1s ease-in-out; }
         
         .instruction-card { animation: slideUp 0.6s ease-out forwards; }
         @keyframes slideUp {
@@ -295,33 +301,38 @@
             </div>
             
             <!-- 人行道 -->
-            <div class="h-1/3 w-full sidewalk relative flex justify-center">
-                <div id="cat-mover" class="absolute bottom-10 hidden z-10 w-full h-32 pointer-events-none">
-                    <div id="cat-wrapper" class="absolute bottom-0 cat-transition pointer-events-auto">
-                        <div class="cursor-pointer flex flex-col items-center" onclick="interactWithCat()">
-                            <div id="cat-tooltip" class="absolute -top-6 text-lg font-bold text-blue-600 bg-white/90 border-2 border-blue-200 px-3 py-1 rounded-full animate-bounce">💦抓我呀</div>
-                            <div id="cat-emoji" class="text-8xl animate-float">🐱</div>
-                            <div class="picnic-mat scale-75"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="bowl-area" class="absolute bottom-10 cursor-pointer" onclick="handleBowlClick()">
-                    <div id="bowl-empty" class="w-28 h-14 bg-amber-50 rounded-full border-4 border-amber-600 shadow-lg flex items-center justify-center hover:scale-105 transition">
-                        <span class="text-base font-bold text-amber-700 opacity-80">放食物</span>
-                    </div>
-                    <div id="bowl-filled" class="hidden relative">
-                        <div class="w-28 h-14 bg-amber-50 rounded-full border-4 border-amber-600 shadow-lg"></div>
-                        <div id="food-emoji" class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-5xl animate-bounce">🍙</div>
-                        <div class="absolute -bottom-4 w-full h-2 bg-gray-300 rounded-full overflow-hidden">
-                            <div id="progress-bar" class="h-full bg-green-500 w-0 transition-all duration-1000 ease-linear"></div>
-                        </div>
+        <div class="h-1/3 w-full sidewalk relative flex justify-center">
+            <!-- 將高度 h-32 (128px) 改為 h-48 (192px)，給予貓咪更多垂直活動空間 -->
+            <div id="cat-mover" class="absolute bottom-10 hidden z-10 w-full h-48 pointer-events-none">
+                <div id="cat-wrapper" class="absolute bottom-0 cat-transition pointer-events-auto">
+                    <div class="cursor-pointer flex flex-col items-center" onclick="interactWithCat()">
+                        <div id="cat-tooltip" class="absolute -top-6 text-lg font-bold text-blue-600 bg-white/90 border-2 border-blue-200 px-3 py-1 rounded-full animate-bounce">💦抓我呀</div>
+                        <div id="cat-emoji" class="text-8xl animate-float">🐱</div>
+                        <div class="picnic-mat scale-75"></div>
                     </div>
                 </div>
             </div>
-        </main>
 
-        <!-- 雜貨鋪 Modal -->
+            <div id="bowl-area" class="absolute bottom-10 cursor-pointer" onclick="handleBowlClick()">
+                <div id="bowl-empty" class="w-28 h-14 bg-amber-50 rounded-full border-4 border-amber-600 shadow-lg flex items-center justify-center hover:scale-105 transition">
+                    <span class="text-base font-bold text-amber-700 opacity-80">放食物</span>
+                </div>
+                <div id="bowl-filled" class="hidden relative">
+                    <div class="w-28 h-14 bg-amber-50 rounded-full border-4 border-amber-600 shadow-lg"></div>
+                    <div id="food-emoji" class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-5xl animate-bounce">🍙</div>
+                    <div class="absolute -bottom-4 w-full h-2 bg-gray-300 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="h-full bg-green-500 w-0 transition-all duration-1000 ease-linear"></div>
+                    </div>
+                    <!-- 新增搖鈴召喚按鈕 -->
+                    <div id="summon-btn" onclick="summonCat(event)" class="absolute -top-10 -right-16 bg-white/95 border-2 border-amber-400 text-amber-700 font-bold px-3 py-1.5 rounded-full shadow-lg cursor-pointer animate-bounce z-20 text-sm whitespace-nowrap hover:bg-amber-50 active:scale-95 transition-transform">
+                        🛎️ 搖鈴
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 雜貨鋪 Modal -->
         <div id="shop-modal" class="absolute inset-0 bg-black/50 z-30 hidden flex-col justify-end backdrop-blur-sm transition-opacity">
             <div class="bg-white w-full rounded-t-3xl p-6 shadow-2xl transform translate-y-full transition-transform" id="shop-content">
                 <div class="flex justify-between items-center mb-4">
@@ -407,14 +418,13 @@
                 </div>
                 <h3 id="dialogue-cat-name" class="font-bold text-2xl text-amber-800 mb-3">貓咪名字</h3>
                 <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-4">
-                    <div class="flex justify-center items-center gap-3 mb-2">
-                        <p id="english-quote" class="text-xl font-bold text-gray-800">"Hello!"</p>
-                        <button onclick="playPronunciation()" class="w-10 h-10 bg-blue-200 rounded-full flex items-center justify-center shadow-sm hover:bg-blue-300 transition hover:scale-105">🔊</button>
+                    <div class="flex justify-center items-center mb-2">
+                        <p id="english-quote" class="text-xl font-bold text-gray-800 text-center">"Hello!"</p>
                     </div>
                     <p id="chinese-translation" class="text-sm text-gray-600 font-medium">你好！</p>
                 </div>
                 <div id="reward-container" class="text-lg text-amber-600 font-bold mb-4 bg-amber-50 p-2 rounded-lg border border-amber-100"></div>
-                <button onclick="collectReward()" class="w-full bg-amber-500 text-white font-bold py-3 rounded-xl shadow-md active:scale-95 transition hover:bg-amber-600">收下禮物並道別 👋</button>
+                <button id="dialogue-action-btn" onclick="collectReward()" class="w-full bg-amber-500 text-white font-bold py-3 rounded-xl shadow-md active:scale-95 transition hover:bg-amber-600">收下禮物並道別 👋</button>
             </div>
         </div>
 
@@ -433,26 +443,118 @@
             </div>
         </div>
 
+        <!-- 通關 Modal -->
+        <div id="game-complete-modal" class="absolute inset-0 bg-black/80 z-[100] hidden flex-col justify-center items-center p-4 backdrop-blur-sm overflow-y-auto">
+            <div class="bg-gradient-to-b from-yellow-100 to-yellow-300 rounded-3xl p-8 w-full max-w-sm text-center border-4 border-yellow-400 animate-pop shadow-2xl relative overflow-hidden my-auto">
+                <h2 class="text-3xl font-bold mb-4 text-amber-900 drop-shadow-sm">🏆 圖鑑收集完成 🏆</h2>
+                <div class="mb-6 text-amber-800 font-bold text-lg leading-relaxed">
+                    太不可思議了！<br>
+                    你已經成功收集到所有的幻之小貓！<br>
+                    感謝您的遊玩與陪伴 💕<br>
+                    <span class="text-red-600 mt-2 block">(獲得通關獎勵：500 金幣)</span>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <button onclick="playAgain()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl shadow-lg active:scale-95 transition text-lg">再玩一次 🔄</button>
+                    <button onclick="endGame()" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 rounded-xl shadow-lg active:scale-95 transition text-lg">結束遊戲 🚪</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
         // --- 核心貓咪數據 (15 隻) ---
         const CATS = [
-            { id: 'c1', name: '流浪橘橘', emoji: '🐈', reqFood: ['f1', 'f2'], rarity: 1, minReward: 15, maxReward: 25, dialogues: [{en: "Hello! I'm so hungry.", zh: "你好！我真的好餓喔。"}, {en: "Got more food?", zh: "還有更多食物嗎？"}, {en: "Yummy!", zh: "真好吃！"}, {en: "I love eating.", zh: "我最喜歡吃東西了。"}, {en: "Thanks for the meal.", zh: "謝謝你的招待。"}] },
-            { id: 'c2', name: '害羞三花', emoji: '🐾', reqFood: ['f1', 'f2', 'f3'], rarity: 1, minReward: 20, maxReward: 40, dialogues: [{en: "It's a nice day.", zh: "今天是個好日子。"}, {en: "You're kind.", zh: "你真溫柔。"}, {en: "Don't look at me.", zh: "不要一直盯著我看啦。"}, {en: "I'm a bit shy.", zh: "我有一點害羞。"}, {en: "Purr...", zh: "呼嚕呼嚕..."}] },
-            { id: 'c3', name: '冒險家橘白', emoji: '🧭🐱', reqFood: ['f2', 'f3', 'f4'], rarity: 2, minReward: 50, maxReward: 80, dialogues: [{en: "Ready for an adventure?", zh: "準備好要去冒險了嗎？"}, {en: "What's over there?", zh: "那邊有什麼？"}, {en: "I'm not scared.", zh: "我什麼都不怕！"}, {en: "Let's explore!", zh: "我們去探險吧！"}, {en: "The world is huge.", zh: "世界真大。"}] },
-            { id: 'c4', name: '三花老師', emoji: '🎓🐈', reqFood: ['f3', 'f4'], rarity: 3, minReward: 100, maxReward: 150, dialogues: [{en: "Practice makes perfect.", zh: "熟能生巧，加油喔。"}, {en: "Did you study?", zh: "你有複習嗎？"}, {en: "Listen carefully.", zh: "注意聽好囉。"}, {en: "Math is fun.", zh: "數學很有趣吧。"}, {en: "Good job!", zh: "做得好！"}] },
-            { id: 'c5', name: '影子忍者貓', emoji: '🥷🐾', reqFood: ['f4', 'f5'], rarity: 4, minReward: 200, maxReward: 300, dialogues: [{en: "You can't see me.", zh: "你看不見我的，嘿嘿。"}, {en: "I am the shadow.", zh: "我是黑夜中的影子。"}, {en: "Ninja style!", zh: "忍者風範！"}, {en: "Too slow!", zh: "太慢了！"}, {en: "Hiding is my art.", zh: "隱身是我的藝術。"}] },
-            { id: 'c6', name: '祭典舞者', emoji: '👺🐱', reqFood: ['f4', 'f5'], rarity: 4, minReward: 250, maxReward: 400, dialogues: [{en: "Let's dance together!", zh: "讓我們一起跳舞吧！"}, {en: "Feel the rhythm.", zh: "感受這個節奏。"}, {en: "Festival is great.", zh: "祭典最棒了。"}, {en: "Watch my steps.", zh: "看我的舞步。"}, {en: "So much fun!", zh: "太好玩了！"}] },
-            { id: 'c7', name: '魔法黑貓', emoji: '🧙‍♀️🐈‍⬛', reqFood: ['f5', 'f6'], rarity: 5, minReward: 400, maxReward: 600, dialogues: [{en: "I bring you luck.", zh: "我會為你帶來好運。"}, {en: "Magic is real.", zh: "魔法是真實存在的。"}, {en: "Abracadabra!", zh: "阿布拉卡達布拉！"}, {en: "Look into my eyes.", zh: "看著我的眼睛。"}, {en: "A spell for you.", zh: "為你施個小魔法。"}] },
-            { id: 'c8', name: '宇宙飛行貓', emoji: '🚀🐱', reqFood: ['f5', 'f6'], rarity: 5, minReward: 500, maxReward: 800, dialogues: [{en: "Earth is beautiful.", zh: "從太空看地球真的很美。"}, {en: "To the moon!", zh: "飛向月球！"}, {en: "Zero gravity is fun.", zh:"無重力狀態真好玩。"}, {en: "Seeing stars.", zh: "看到了好多星星。"}, {en: "Space is quiet.", zh: "宇宙真安靜。"}] },
-            { id: 'c9', name: '傳說招財貓', emoji: '🧧🐱', reqFood: ['f6'], rarity: 6, minReward: 1000, maxReward: 2000, dialogues: [{en: "Gold coins for you!", zh: "送你滿滿的大金幣！"}, {en: "Bring in the wealth.", zh: "招財進寶喔。"}, {en: "Lucky day!", zh: "今天是你的幸運日！"}, {en: "Keep smiling.", zh: "保持微笑就會有好事。"}, {en: "Fortune is coming.", zh: "財富要來囉。"}] },
-            { id: 'c10', name: '紳士禮帽喵', emoji: '🎩🐈', reqFood: ['f3', 'f4'], rarity: 3, minReward: 120, maxReward: 180, dialogues: [{en: "Good afternoon, my friend.", zh: "午安，我的朋友。"}, {en: "Tea time?", zh: "要喝杯茶嗎？"}, {en: "Manners make the cat.", zh: "禮儀成就一隻好貓。"}, {en: "Nice to meet you.", zh: "很高興認識你。"}, {en: "What a lovely day.", zh: "多麼美好的一天。"}] },
-            { id: 'c11', name: '櫻花妖精喵', emoji: '🌸🐱', reqFood: ['f1', 'f5'], rarity: 3, minReward: 150, maxReward: 250, dialogues: [{en: "Spring is in the air.", zh: "空氣中充滿了春天的氣息。"}, {en: "Cherry blossoms are falling.", zh: "櫻花正在飄落呢。"}, {en: "Do you like flowers?", zh: "你喜歡花嗎？"}, {en: "It's getting warm.", zh: "天氣變暖和了。"}, {en: "Pink is my color.", zh: "粉紅色是我的代表色。"}] },
-            { id: 'c12', name: '壽司大師喵', emoji: '🍣🐱', reqFood: ['f4', 'f6'], rarity: 4, minReward: 300, maxReward: 500, dialogues: [{en: "Freshest ingredients only.", zh: "我只選用最新鮮的食材。"}, {en: "Tuna or salmon?", zh: "要吃鮪魚還是鮭魚？"}, {en: "Perfect rice.", zh: "這醋飯捏得剛剛好。"}, {en: "Welcome to my shop.", zh: "歡迎光臨我的壽司店。"}, {en: "Eat while it's fresh.", zh: "趁新鮮快吃吧。"}] },
-            { id: 'c13', name: '閃電速遞喵', emoji: '⚡🐈', reqFood: ['f2', 'f4'], rarity: 2, minReward: 60, maxReward: 100, dialogues: [{en: "Too fast for you!", zh: "我跑太快了，你抓不住的！"}, {en: "Package delivered.", zh: "包裹已經送達囉。"}, {en: "I am speed.", zh: "我就是速度的化身。"}, {en: "Catch me if you can.", zh: "有本事來抓我呀。"}, {en: "No time to rest.", zh: "沒時間休息了。"}] },
-            { id: 'c14', name: '冰雪之靈喵', emoji: '❄️🐱', reqFood: ['f5', 'f6'], rarity: 5, minReward: 600, maxReward: 900, dialogues: [{en: "The cold doesn't bother me.", zh: "寒冷對我來說根本不算什麼。"}, {en: "Let it snow.", zh: "讓雪下吧。"}, {en: "Ice is sparkling.", zh: "冰晶閃閃發光。"}, {en: "Winter is coming.", zh: "冬天要來了。"}, {en: "Build a snowman?", zh: "你想堆雪人嗎？"}] },
-            { id: 'c15', name: '月之祭司喵', emoji: '🌙🐱', reqFood: ['f6'], rarity: 6, minReward: 1500, maxReward: 3000, dialogues: [{en: "The moon shines for us.", zh: "月亮正為我們而閃耀。"}, {en: "Listen to the night.", zh: "傾聽夜晚的聲音。"}, {en: "Stars are guiding us.", zh: "星星正在指引我們。"}, {en: "Peace be with you.", zh: "願平靜與你同在。"}, {en: "A beautiful night.", zh: "多麼美麗的夜晚。"}] }
+            { id: 'c1', name: '流浪橘橘', emoji: '🐈', reqFood: ['f1', 'f2'], rarity: 1, minReward: 5, maxReward: 15, dialogues: [
+                {en: "Hello! I'm so hungry.", zh: "你好！我真的好餓喔。"}, {en: "Got more food?", zh: "還有更多食物嗎？"}, {en: "Yummy!", zh: "真好吃！"}, {en: "I love eating.", zh: "我最喜歡吃東西了。"}, {en: "Thanks for the meal.", zh: "謝謝你的招待。"},
+                {en: "Pet me please!", zh: "拜託摸摸我嘛！"}, {en: "Rub my belly!", zh: "揉揉我的肚子！"}, {en: "You are the best!", zh: "你是最棒的！"}, {en: "Can I hug you?", zh: "可以抱抱你嗎？"}, {en: "Purr... purr...", zh: "呼嚕... 呼嚕..."},
+                {en: "Don't leave me.", zh: "不要離開我嘛。"}, {en: "More snacks?", zh: "還有零食嗎？"}, {en: "Meow~", zh: "喵～"}, {en: "I like your scent.", zh: "我喜歡你的味道。"}, {en: "Look at my paws.", zh: "看看我的小肉球。"},
+                {en: "I'm so happy!", zh: "我好開心！"}, {en: "Stay with me.", zh: "留下來陪我。"}, {en: "You're my favorite.", zh: "你是我最喜歡的人。"}, {en: "Headpats, please.", zh: "請摸摸我的頭。"}, {en: "Sleepy now...", zh: "現在想睡覺了..."}
+            ] },
+            { id: 'c2', name: '害羞三花', emoji: '🐾', reqFood: ['f1', 'f2', 'f3'], rarity: 1, minReward: 10, maxReward: 20, dialogues: [
+                {en: "It's a nice day.", zh: "今天是個好日子。"}, {en: "You're kind.", zh: "你真溫柔。"}, {en: "Don't look at me.", zh: "不要一直盯著我看啦。"}, {en: "I'm a bit shy.", zh: "我有一點害羞。"}, {en: "Purr...", zh: "呼嚕呼嚕..."},
+                {en: "You're so warm.", zh: "你好溫暖喔。"}, {en: "I... I like you.", zh: "我... 我喜歡你。"}, {en: "Can I sit here?", zh: "我可以坐在這裡嗎？"}, {en: "Your hands are soft.", zh: "你的手好軟。"}, {en: "I feel safe with you.", zh: "在你身邊覺得很安全。"},
+                {en: "Just a little pat?", zh: "可以輕輕摸一下嗎？"}, {en: "Hides behind you.", zh: "躲在你身後。"}, {en: "I brought you a leaf.", zh: "我送你一片葉子。"}, {en: "Peekaboo!", zh: "躲貓貓！"}, {en: "Will you come back?", zh: "你還會再來嗎？"},
+                {en: "I trust you.", zh: "我很信任你喔。"}, {en: "Blushing...", zh: "臉紅紅..."}, {en: "Sweet dreams.", zh: "祝你做個好夢。"}, {en: "Don't let me go.", zh: "不要放開我。"}, {en: "I love your voice.", zh: "我喜歡你的聲音。"}
+            ] },
+            { id: 'c3', name: '冒險家橘白', emoji: '🧭🐱', reqFood: ['f2', 'f3', 'f4'], rarity: 2, minReward: 15, maxReward: 30, dialogues: [
+                {en: "Ready for an adventure?", zh: "準備好要去冒險了嗎？"}, {en: "What's over there?", zh: "那邊有什麼？"}, {en: "I'm not scared.", zh: "我什麼都不怕！"}, {en: "Let's explore!", zh: "我們去探險吧！"}, {en: "The world is huge.", zh: "世界真大。"},
+                {en: "Play with me!", zh: "跟我一起玩！"}, {en: "Catch me if you can!", zh: "來抓我呀！"}, {en: "You are my sidekick!", zh: "你是我的得力助手！"}, {en: "Let's climb that tree.", zh: "我們去爬那棵樹吧。"}, {en: "Look what I found!", zh: "看我發現了什麼！"},
+                {en: "I'm so strong!", zh: "我超強壯的！"}, {en: "Carry me!", zh: "抱我起來！"}, {en: "I'll protect you.", zh: "我會保護你的。"}, {en: "Follow my lead.", zh: "跟著我走就對了。"}, {en: "Pounces on a bug.", zh: "撲向一隻小蟲。"},
+                {en: "Are you tired yet?", zh: "你累了嗎？"}, {en: "Adventure time!", zh: "探險時間到！"}, {en: "I'm the brave captain.", zh: "我是勇敢的船長。"}, {en: "Look at me jump!", zh: "看我跳得多高！"}, {en: "Let's run together.", zh: "我們一起奔跑吧。"}
+            ] },
+            { id: 'c4', name: '三花老師', emoji: '🎓🐈', reqFood: ['f3', 'f4'], rarity: 3, minReward: 30, maxReward: 50, dialogues: [
+                {en: "Practice makes perfect.", zh: "熟能生巧，加油喔。"}, {en: "Did you study?", zh: "你有複習嗎？"}, {en: "Listen carefully.", zh: "注意聽好囉。"}, {en: "Math is fun.", zh: "數學很有趣吧。"}, {en: "Good job!", zh: "做得好！"},
+                {en: "You did great today.", zh: "你今天表現得很好喔。"}, {en: "Take a break.", zh: "休息一下吧。"}, {en: "I'm proud of you.", zh: "我為你感到驕傲。"}, {en: "Keep up the good work.", zh: "繼續保持努力。"}, {en: "Need a hug?", zh: "需要老師抱一下嗎？"},
+                {en: "Don't give up.", zh: "千萬不要放棄。"}, {en: "You are very smart.", zh: "你真的很聰明呢。"}, {en: "Let me adjust your collar.", zh: "讓我幫你整理一下衣領。"}, {en: "Homework done?", zh: "功課做完了嗎？"}, {en: "Patting your head.", zh: "輕輕摸摸你的頭。"},
+                {en: "Good student.", zh: "真是個好學生。"}, {en: "Drink more water.", zh: "要多喝水喔。"}, {en: "I'm always here.", zh: "老師一直都在這裡。"}, {en: "You can do it!", zh: "你一定做得到的！"}, {en: "Smile for me.", zh: "對我笑一個吧。"}
+            ] },
+            { id: 'c5', name: '影子忍者貓', emoji: '🥷🐾', reqFood: ['f4', 'f5'], rarity: 4, minReward: 50, maxReward: 80, dialogues: [
+                {en: "You can't see me.", zh: "你看不見我的，嘿嘿。"}, {en: "I am the shadow.", zh: "我是黑夜中的影子。"}, {en: "Ninja style!", zh: "忍者風範！"}, {en: "Too slow!", zh: "太慢了！"}, {en: "Hiding is my art.", zh: "隱身是我的藝術。"},
+                {en: "I guess I like you.", zh: "我勉強算喜歡你吧。"}, {en: "Don't touch my tail!", zh: "不要摸我的尾巴！"}, {en: "Hmph.", zh: "哼。"}, {en: "You found me again.", zh: "又被你找到了。"}, {en: "I was just passing by.", zh: "我只是剛好路過。"},
+                {en: "Fine, you can pet me.", zh: "好吧，允許你摸一下。"}, {en: "I'm not being cute.", zh: "我才沒有在賣萌。"}, {en: "Shadow clone jutsu!", zh: "影分身之術！"}, {en: "You're not so bad.", zh: "你這人還算不錯。"}, {en: "Stealth mode.", zh: "進入隱身模式。"},
+                {en: "Did you miss me?", zh: "你想我了嗎？"}, {en: "I'll watch your back.", zh: "我會在你背後守護你。"}, {en: "Don't tell anyone.", zh: "別告訴別人喔。"}, {en: "Ninja vanish!", zh: "忍者消失！"}, {en: "Purrs quietly.", zh: "（小聲地呼嚕呼嚕）"}
+            ] },
+            { id: 'c6', name: '祭典舞者', emoji: '👺🐱', reqFood: ['f4', 'f5'], rarity: 4, minReward: 55, maxReward: 85, dialogues: [
+                {en: "Let's dance together!", zh: "讓我們一起跳舞吧！"}, {en: "Feel the rhythm.", zh: "感受這個節奏。"}, {en: "Festival is great.", zh: "祭典最棒了。"}, {en: "Watch my steps.", zh: "看我的舞步。"}, {en: "So much fun!", zh: "太好玩了！"},
+                {en: "Dance with me!", zh: "跟我一起跳舞！"}, {en: "You have good rhythm.", zh: "你的節奏感不錯喔。"}, {en: "Let's party!", zh: "一起來開派對吧！"}, {en: "Twirls around.", zh: "開心地轉圈圈。"}, {en: "Smile, it's a festival!", zh: "笑一個，現在是祭典呢！"},
+                {en: "Listen to the music.", zh: "聽聽這美妙的音樂。"}, {en: "You're my partner.", zh: "你是我的專屬舞伴。"}, {en: "Clap your hands!", zh: "一起拍拍手！"}, {en: "So much energy!", zh: "充滿了活力！"}, {en: "Join the circle.", zh: "加入我們的圓圈吧。"},
+                {en: "Taiko drums are loud!", zh: "太鼓的聲音好響亮！"}, {en: "Happy festival!", zh: "祭典快樂！"}, {en: "Look at my outfit.", zh: "看看我的漂亮衣服。"}, {en: "Let's have a feast.", zh: "我們來大吃一頓吧。"}, {en: "Don't stop moving.", zh: "不要停下來喔。"}
+            ] },
+            { id: 'c7', name: '魔法黑貓', emoji: '🧙‍♀️🐈‍⬛', reqFood: ['f5', 'f6'], rarity: 5, minReward: 80, maxReward: 120, dialogues: [
+                {en: "I bring you luck.", zh: "我會為你帶來好運。"}, {en: "Magic is real.", zh: "魔法是真實存在的。"}, {en: "Abracadabra!", zh: "阿布拉卡達布拉！"}, {en: "Look into my eyes.", zh: "看著我的眼睛。"}, {en: "A spell for you.", zh: "為你施個小魔法。"},
+                {en: "A spell of love for you.", zh: "為你施展一個愛的魔法。"}, {en: "You are enchanted.", zh: "你被我迷住了嗎？"}, {en: "My magic chose you.", zh: "我的魔法選擇了你。"}, {en: "Wish upon a star.", zh: "對著星星許願吧。"}, {en: "You are my familiar.", zh: "你是我的專屬使魔。"},
+                {en: "Bippity boppity boo!", zh: "比比迪巴比迪布！"}, {en: "Healing magic!", zh: "蹭蹭治癒魔法！"}, {en: "I see your future.", zh: "我看見了你的未來。"}, {en: "It's full of happiness.", zh: "充滿了幸福喔。"}, {en: "Wiggle my ears.", zh: "動動我的精靈耳朵。"},
+                {en: "Dark but cute.", zh: "黑暗但可愛。"}, {en: "A potion of luck.", zh: "送你一瓶幸運靈藥。"}, {en: "Don't be scared of the dark.", zh: "不要害怕黑暗。"}, {en: "I'm your guardian.", zh: "我是你的魔法守護者。"}, {en: "Poof!", zh: "砰！撒嬌魔法完成！"}
+            ] },
+            { id: 'c8', name: '宇宙飛行貓', emoji: '🚀🐱', reqFood: ['f5', 'f6'], rarity: 5, minReward: 90, maxReward: 130, dialogues: [
+                {en: "Earth is beautiful.", zh: "從太空看地球真的很美。"}, {en: "To the moon!", zh: "飛向月球！"}, {en: "Zero gravity is fun.", zh:"無重力狀態真好玩。"}, {en: "Seeing stars.", zh: "看到了好多星星。"}, {en: "Space is quiet.", zh: "宇宙真安靜。"},
+                {en: "You are my universe.", zh: "你就是我的全宇宙。"}, {en: "Let's float together.", zh: "我們一起漂浮吧。"}, {en: "You shine like a star.", zh: "你像星星一樣閃耀。"}, {en: "Hugging you in zero-G.", zh: "在無重力狀態下擁抱你。"}, {en: "Houston, we have a cutie.", zh: "休士頓，我們發現一個小可愛。"},
+                {en: "Rocket hug!", zh: "火箭衝刺抱抱！"}, {en: "To infinity and beyond!", zh: "飛向宇宙，浩瀚無垠！"}, {en: "Stardust falls on you.", zh: "星塵灑落在你身上。"}, {en: "You're out of this world.", zh: "你真是太不可思議了。"}, {en: "Take my paw.", zh: "牽著我的毛毛手。"},
+                {en: "Orbiting around you.", zh: "每天圍繞著你旋轉。"}, {en: "Look at the Milky Way.", zh: "看看那條美麗的銀河。"}, {en: "Space walk!", zh: "太空漫步！"}, {en: "Alien cat says meow.", zh: "外星貓貓說喵～"}, {en: "I missed earth.", zh: "我想念地球的你了。"}
+            ] },
+            { id: 'c9', name: '傳說招財貓', emoji: '🧧🐱', reqFood: ['f6'], rarity: 6, minReward: 140, maxReward: 180, dialogues: [
+                {en: "Gold coins for you!", zh: "送你滿滿的大金幣！"}, {en: "Bring in the wealth.", zh: "招財進寶喔。"}, {en: "Lucky day!", zh: "今天是你的幸運日！"}, {en: "Keep smiling.", zh: "保持微笑就會有好事。"}, {en: "Fortune is coming.", zh: "財富要來囉。"},
+                {en: "Rub my tummy for luck!", zh: "摸摸我的肚子會帶來好運喔！"}, {en: "I give you all my fortune.", zh: "我把好運都分給你。"}, {en: "You are my greatest treasure.", zh: "你是我最棒的寶物。"}, {en: "Jingles the bell.", zh: "叮噹叮噹，鈴鐺響了。"}, {en: "Want a golden hug?", zh: "想要一個黃金抱抱嗎？"},
+                {en: "I'm a lucky charm.", zh: "我是你的幸運符。"}, {en: "Fortune favors you.", zh: "幸運女神眷顧你。"}, {en: "Smile and get rich.", zh: "笑一個，準備發大財。"}, {en: "My paw is tired, hold it.", zh: "我的手舉得好酸，幫我牽著。"}, {en: "You are purr-fect.", zh: "你真是太完美了。"},
+                {en: "A shower of coins!", zh: "金幣雨來囉！"}, {en: "Lucky meow~", zh: "幸運喵～"}, {en: "I like you more than gold.", zh: "我喜歡你勝過喜歡黃金。"}, {en: "Let's get wealthy.", zh: "我們一起變成大富翁吧。"}, {en: "Prosperity to you!", zh: "祝你繁榮昌盛！"}
+            ] },
+            { id: 'c10', name: '紳士禮帽喵', emoji: '🎩🐈', reqFood: ['f3', 'f4'], rarity: 3, minReward: 30, maxReward: 45, dialogues: [
+                {en: "Good afternoon, my friend.", zh: "午安，我的朋友。"}, {en: "Tea time?", zh: "要喝杯茶嗎？"}, {en: "Manners make the cat.", zh: "禮儀成就一隻好貓。"}, {en: "Nice to meet you.", zh: "很高興認識你。"}, {en: "What a lovely day.", zh: "多麼美好的一天。"},
+                {en: "May I have this dance?", zh: "我可以請你跳支舞嗎？"}, {en: "You look stunning today.", zh: "你今天看起來真迷人。"}, {en: "A gentleman always purrs.", zh: "紳士總是用呼嚕聲表達愛意。"}, {en: "Allow me to accompany you.", zh: "請允許我陪伴在你身邊。"}, {en: "Kisses your hand.", zh: "輕輕親吻你的手背。"},
+                {en: "My dear friend.", zh: "我最親愛的朋友。"}, {en: "You have a beautiful smile.", zh: "你的笑容真美。"}, {en: "Tips hat respectfully.", zh: "優雅地脫帽致敬。"}, {en: "Shall we walk?", zh: "我們要去散步嗎？"}, {en: "I brought you a rose.", zh: "我為你帶來了一朵玫瑰。"},
+                {en: "Charming as always.", zh: "你還是一如既往地迷人。"}, {en: "At your service.", zh: "樂意為您效勞。"}, {en: "A perfect afternoon.", zh: "真是個完美的下午。"}, {en: "You flatter me.", zh: "你過獎了。"}, {en: "Yours truly.", zh: "你忠實的撒嬌貓貓。"}
+            ] },
+            { id: 'c11', name: '櫻花妖精喵', emoji: '🌸🐱', reqFood: ['f1', 'f5'], rarity: 3, minReward: 35, maxReward: 55, dialogues: [
+                {en: "Spring is in the air.", zh: "空氣中充滿了春天的氣息。"}, {en: "Cherry blossoms are falling.", zh: "櫻花正在飄落呢。"}, {en: "Do you like flowers?", zh: "你喜歡花嗎？"}, {en: "It's getting warm.", zh: "天氣變暖和了。"}, {en: "Pink is my color.", zh: "粉紅色是我的代表色。"},
+                {en: "I bloom for you.", zh: "我只為你綻放。"}, {en: "Catch a falling petal.", zh: "抓住那片飄落的花瓣吧。"}, {en: "You smell like spring.", zh: "你身上有春天的味道。"}, {en: "Let's take a nap under the tree.", zh: "我們在樹下睡個午覺吧。"}, {en: "Pink is the color of love.", zh: "粉紅色是愛的顏色喔。"},
+                {en: "Rubbing my cheek on yours.", zh: "用臉頰蹭蹭你的臉頰。"}, {en: "I love the warm breeze.", zh: "我好喜歡這溫暖的微風。"}, {en: "You make me blossom.", zh: "你讓我心花怒放。"}, {en: "Floral magic!", zh: "花瓣魔法！"}, {en: "So soft and fluffy.", zh: "軟綿綿的真舒服。"},
+                {en: "Springtime cuddles.", zh: "春天的抱抱。"}, {en: "A little flower for you.", zh: "送你一朵小花。"}, {en: "I feel so happy.", zh: "我覺得好幸福。"}, {en: "Dance in the petals.", zh: "在花瓣中跳舞。"}, {en: "Stay sweet.", zh: "保持甜美喔。"}
+            ] },
+            { id: 'c12', name: '壽司大師喵', emoji: '🍣🐱', reqFood: ['f4', 'f6'], rarity: 4, minReward: 60, maxReward: 90, dialogues: [
+                {en: "Freshest ingredients only.", zh: "我只選用最新鮮的食材。"}, {en: "Tuna or salmon?", zh: "要吃鮪魚還是鮭魚？"}, {en: "Perfect rice.", zh: "這醋飯捏得剛剛好。"}, {en: "Welcome to my shop.", zh: "歡迎光臨我的壽司店。"}, {en: "Eat while it's fresh.", zh: "趁新鮮快吃吧。"},
+                {en: "I made this special for you.", zh: "這是我特別為你捏的壽司喔。"}, {en: "Eat up, get strong!", zh: "多吃點，長得壯壯的！"}, {en: "My heart is in this sushi.", zh: "這份壽司充滿了我的心意。"}, {en: "You are my VIP.", zh: "你是我的超級貴賓。"}, {en: "Wipes paws on apron.", zh: "在圍裙上擦擦手。"},
+                {en: "Want some extra wasabi?", zh: "想要多加一點芥末嗎？"}, {en: "Say ahh~", zh: "來，啊～"}, {en: "Feeding you is my joy.", zh: "餵飽你是我的樂趣。"}, {en: "Delicious, right?", zh: "很好吃對吧？"}, {en: "I saved the best piece for you.", zh: "我把最好吃的一口留給你了。"},
+                {en: "Master's secret recipe.", zh: "這是大師的秘密配方。"}, {en: "Come again soon.", zh: "下次還要再來喔。"}, {en: "You appreciate good food.", zh: "你很懂得品嚐美食呢。"}, {en: "A little treat.", zh: "給你一點小獎勵。"}, {en: "I work hard for you.", zh: "我會為了你努力工作的。"}
+            ] },
+            { id: 'c13', name: '閃電速遞喵', emoji: '⚡🐈', reqFood: ['f2', 'f4'], rarity: 2, minReward: 15, maxReward: 25, dialogues: [
+                {en: "Too fast for you!", zh: "我跑太快了，你抓不住的！"}, {en: "Package delivered.", zh: "包裹已經送達囉。"}, {en: "I am speed.", zh: "我就是速度的化身。"}, {en: "Catch me if you can.", zh: "有本事來抓我呀。"}, {en: "No time to rest.", zh: "沒時間休息了。"},
+                {en: "I ran all the way here to see you!", zh: "我是一路跑著來見你的！"}, {en: "Zip! Zap! Hug!", zh: "咻！啪！抱緊處理！"}, {en: "My heart beats so fast for you.", zh: "我的心為你跳得好快。"}, {en: "I brought you a letter of love.", zh: "我為你送來了一封情書。"}, {en: "Let's race!", zh: "我們來賽跑吧！"},
+                {en: "I never miss a delivery.", zh: "我從不漏送任何包裹。"}, {en: "Can I rest in your lap?", zh: "我可以在你腿上休息一下嗎？"}, {en: "Zoomies!", zh: "開啟衝刺模式！"}, {en: "You're electric!", zh: "你充滿了魅力！"}, {en: "Sparking with joy.", zh: "開心得閃閃發光。"},
+                {en: "Quick kiss!", zh: "快速親一下！"}, {en: "I'm out of breath.", zh: "我跑到喘不過氣了。"}, {en: "Hold me tight.", zh: "緊緊抱住我。"}, {en: "Delivery for my favorite person.", zh: "這份快遞是給最喜歡的人的。"}, {en: "Faster than light!", zh: "比光速還要快！"}
+            ] },
+            { id: 'c14', name: '冰雪之靈喵', emoji: '❄️🐱', reqFood: ['f5', 'f6'], rarity: 5, minReward: 100, maxReward: 140, dialogues: [
+                {en: "The cold doesn't bother me.", zh: "寒冷對我來說根本不算什麼。"}, {en: "Let it snow.", zh: "讓雪下吧。"}, {en: "Ice is sparkling.", zh: "冰晶閃閃發光。"}, {en: "Winter is coming.", zh: "冬天要來了。"}, {en: "Build a snowman?", zh: "你想堆雪人嗎？"},
+                {en: "You melted my heart.", zh: "你融化了我的心。"}, {en: "My paws are cold, hold them.", zh: "我的手好冰，幫我暖暖好嗎？"}, {en: "You are my sunshine.", zh: "你是我的小太陽。"}, {en: "A frosty kiss.", zh: "給你一個冰涼的吻。"}, {en: "I like your warmth.", zh: "我喜歡你身上的溫度。"},
+                {en: "Snowflakes are like tiny stars.", zh: "雪花就像微小的星星。"}, {en: "Let's snuggle.", zh: "我們來依偎在一起吧。"}, {en: "Crystal clear.", zh: "像水晶一樣純粹。"}, {en: "I made a snow cat for you.", zh: "我為你堆了一隻雪貓貓。"}, {en: "Don't catch a cold.", zh: "要小心別著涼了喔。"},
+                {en: "You make me purr.", zh: "你讓我忍不住呼嚕呼嚕。"}, {en: "Winter magic.", zh: "冬日的魔法。"}, {en: "I'm your little snowflake.", zh: "我是你的小雪花。"}, {en: "Hold me close.", zh: "把我抱緊一點。"}, {en: "Stay with me till spring.", zh: "陪我一起直到春天到來。"}
+            ] },
+            { id: 'c15', name: '月之祭司喵', emoji: '🌙🐱', reqFood: ['f6'], rarity: 6, minReward: 160, maxReward: 200, dialogues: [
+                {en: "The moon shines for us.", zh: "月亮正為我們而閃耀。"}, {en: "Listen to the night.", zh: "傾聽夜晚的聲音。"}, {en: "Stars are guiding us.", zh: "星星正在指引我們。"}, {en: "Peace be with you.", zh: "願平靜與你同在。"}, {en: "A beautiful night.", zh: "多麼美麗的夜晚。"},
+                {en: "I prayed for you.", zh: "我為你祈禱了。"}, {en: "The stars sing of you.", zh: "群星都在歌頌著你。"}, {en: "Sleep well, my child.", zh: "好好睡吧，我的孩子。"}, {en: "I will protect your dreams.", zh: "我會守護你的夢境。"}, {en: "A blessing from the moon.", zh: "來自月亮的祝福。"},
+                {en: "You are pure of heart.", zh: "你有一顆純潔的心。"}, {en: "Let my purr soothe you.", zh: "讓我的呼嚕聲安撫你吧。"}, {en: "Rest your head here.", zh: "把頭靠在我這裡休息吧。"}, {en: "Night time is for cuddles.", zh: "夜晚就是要用來抱抱的。"}, {en: "Serenity is with you.", zh: "寧靜與你同在。"},
+                {en: "I see your soul.", zh: "我看見了你美麗的靈魂。"}, {en: "Gentle moonlight.", zh: "溫柔的月光。"}, {en: "You are never alone.", zh: "你永遠不會孤單的。"}, {en: "My precious one.", zh: "我最珍貴的寶貝。"}, {en: "The night is long, stay with me.", zh: "夜還很長，留下來陪我撒嬌吧。"}
+            ] }
         ];
 
         const FOODS = [
@@ -464,7 +566,8 @@
             { id: 'f6', name: '特級貓薄荷', emoji: '🌿', cost: 250, timeSec: 6 }
         ];
 
-        let state = { coins: 100, placedFood: null, currentCat: null, discoveredCats: [], isCatPresent: false, tempReward: 0 };
+        // 新增 foodTimer 狀態來控制進度條與召喚
+        let state = { coins: 100, placedFood: null, currentCat: null, discoveredCats: [], isCatPresent: false, tempReward: 0, gameCompleted: false, currentQuoteEn: "", foodTimer: null };
         let mathState = { active: false, currentAnswer: 0, timer: null, score: 0, timeLeft: 30 };
         let coinState = { active: false, timer: null, score: 0, timeLeft: 10, spawner: null };
         let gameStarted = false;
@@ -489,6 +592,13 @@
                 else if (type === 'meow') { o.frequency.value = 600; o.frequency.exponentialRampToValueAtTime(800, now + 0.2); g.gain.setValueAtTime(0.2, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.4); }
                 else if (type === 'click') { o.frequency.value = 400; g.gain.setValueAtTime(0.1, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.1); }
                 else if (type === 'wrong') { o.frequency.value = 150; g.gain.setValueAtTime(0.2, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.3); }
+                else if (type === 'angry') { 
+                    o.type = 'sawtooth'; 
+                    o.frequency.setValueAtTime(250, now); 
+                    o.frequency.exponentialRampToValueAtTime(80, now + 0.3); 
+                    g.gain.setValueAtTime(0.3, now); 
+                    g.gain.exponentialRampToValueAtTime(0.01, now + 0.4); 
+                }
                 o.start(); o.stop(now + 0.5);
             },
             startBGM() {
@@ -551,8 +661,8 @@
         // --- 驚喜氣球 (小遊戲觸發) ---
         function startAllSpawners() {
             function scheduleNextBalloon() {
-                // 至少 2 分鐘 (120000 毫秒)，加上隨機 0~2 分鐘的等待時間 (總計約 2~4 分鐘出現一次)
-                const delay = 120000 + Math.random() * 120000;
+                // 出現時間：1分鐘(60000ms) 到 10分鐘(600000ms) 之間隨機
+                const delay = 60000 + Math.random() * 540000;
                 
                 setTimeout(() => {
                     // 如果遊戲沒開始、正在玩小遊戲、或是畫面上已經有氣球了，就只排程下一次而不產生新氣球
@@ -675,14 +785,22 @@
                 const coin = document.createElement('div');
                 coin.className = 'falling-coin hover:scale-125 transition-transform'; coin.innerText = '🪙';
                 coin.style.left = (Math.random() * 80 + 10) + '%';
-                coin.onclick = (e) => {
-                    e.stopPropagation(); coinState.score++; document.getElementById('cm-score').innerText = coinState.score;
+                
+                // 使用 pointerdown 取代 onclick，讓手機觸控與滑鼠點擊都更靈敏，且點擊範圍更大
+                coin.onpointerdown = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation(); 
+                    if (coin.dataset.clicked) return;
+                    coin.dataset.clicked = "true";
+                    coinState.score++; document.getElementById('cm-score').innerText = coinState.score;
                     AudioEngine.play('coin'); coin.innerText = '✨'; coin.style.pointerEvents = 'none';
                     setTimeout(() => coin.remove(), 200);
                 };
                 document.getElementById('cm-area').appendChild(coin);
-                setTimeout(() => { if(coin.parentNode) coin.remove(); }, 2500);
-            }, 300);
+                
+                // 掉落時間延長至 3.5s，所以移除時間也延遲到 3500ms
+                setTimeout(() => { if(coin.parentNode) coin.remove(); }, 3500);
+            }, 350); // 配合掉落速度調慢生成頻率
         }
 
         function endCoinMinigame() {
@@ -723,12 +841,43 @@
             AudioEngine.play('click'); state.coins -= f.cost; state.placedFood = f; updateCoinsUI(); closeShop();
             document.getElementById('bowl-empty').classList.add('hidden');
             document.getElementById('bowl-filled').classList.remove('hidden');
+            document.getElementById('summon-btn').classList.remove('hidden'); // 顯示搖鈴按鈕
             document.getElementById('food-emoji').innerText = f.emoji;
             let prg = 0; const bar = document.getElementById('progress-bar');
-            const timer = setInterval(() => {
+            bar.style.width = '0%'; // 重置進度條
+            
+            // 確保清除舊的計時器
+            if(state.foodTimer) clearInterval(state.foodTimer);
+            
+            state.foodTimer = setInterval(() => {
                 prg += 5; bar.style.width = prg + '%';
-                if (prg >= 100) { clearInterval(timer); spawnCat(); }
+                if (prg >= 100) { 
+                    clearInterval(state.foodTimer); 
+                    spawnCat(); 
+                }
             }, f.timeSec * 50);
+        }
+
+        // 新增召喚貓咪功能
+        function summonCat(e) {
+            e.stopPropagation(); // 避免點到碗的觸發
+            if (!state.placedFood || state.isCatPresent) return;
+            
+            // 搖鈴聲與貓叫聲
+            AudioEngine.play('coin'); 
+            setTimeout(() => AudioEngine.play('meow'), 200);
+
+            // 停止時間倒數
+            if(state.foodTimer) clearInterval(state.foodTimer);
+            
+            // 隱藏搖鈴按鈕並瞬間填滿進度條
+            document.getElementById('summon-btn').classList.add('hidden');
+            document.getElementById('progress-bar').style.width = '100%';
+            
+            // 稍等一瞬間讓進度條跑滿再出現貓咪
+            setTimeout(() => {
+                spawnCat();
+            }, 300);
         }
 
         function spawnCat() {
@@ -736,14 +885,17 @@
             state.currentCat = possible[Math.floor(Math.random() * possible.length)];
             state.isCatPresent = true; state.placedFood = null;
             document.getElementById('bowl-filled').classList.add('hidden');
+            document.getElementById('summon-btn').classList.add('hidden'); // 確保隱藏搖鈴
             document.getElementById('cat-emoji').innerText = state.currentCat.emoji;
             document.getElementById('cat-mover').classList.remove('hidden');
             AudioEngine.play('meow');
             const wrapper = document.getElementById('cat-wrapper');
             state.moveInterval = setInterval(() => {
-                wrapper.style.left = (Math.random() * 60 + 20) + '%';
-                wrapper.style.bottom = (Math.random() * 40) + 'px';
-            }, 1000);
+                // 擴大水平範圍：10% ~ 90% (幾乎走到螢幕邊緣)
+                wrapper.style.left = (Math.random() * 80 + 10) + '%';
+                // 擴大垂直範圍：0px ~ 100px (上下跳動範圍增加)
+                wrapper.style.bottom = (Math.random() * 100) + 'px';
+            }, 1200); // 配合過渡動畫加長，間隔改為 1.2 秒
         }
 
         function interactWithCat() {
@@ -753,6 +905,9 @@
             // 隨機抽選 5 句對話中的其中 1 句
             const dialogues = state.currentCat.dialogues;
             const q = dialogues[Math.floor(Math.random() * dialogues.length)];
+            
+            // 記錄當前抽到的英文對話，給發音功能使用
+            state.currentQuoteEn = q.en;
             
             document.getElementById('english-quote').innerText = `"${q.en}"`;
             document.getElementById('chinese-translation').innerText = q.zh;
@@ -765,10 +920,12 @@
                 state.tempReward = Math.floor(Math.random() * (state.currentCat.maxReward - state.currentCat.minReward + 1)) + state.currentCat.minReward;
                 rewardContainer.innerText = `留下了 🪙 ${state.tempReward} 謝禮！`;
                 rewardContainer.className = "text-lg text-amber-600 font-bold mb-4 bg-amber-50 p-2 rounded-lg border border-amber-100";
+                document.getElementById('dialogue-action-btn').innerText = "收下禮物並道別 👋";
             } else {
                 state.tempReward = 0;
-                rewardContainer.innerText = `貓咪好像沒吃飽，這次沒有留下金幣 💦`;
+                rewardContainer.innerText = `貓咪好像沒吃飽，很生氣地走了，沒有留下金幣 💦`;
                 rewardContainer.className = "text-lg text-gray-500 font-bold mb-4 bg-gray-50 p-2 rounded-lg border border-gray-200";
+                document.getElementById('dialogue-action-btn').innerText = "摸摸鼻子道別 💦";
             }
             
             const isNew = !state.discoveredCats.includes(state.currentCat.id);
@@ -793,6 +950,14 @@
             document.getElementById('dialogue-cat-name').innerText = state.currentCat.name;
             document.getElementById('dialogue-modal').classList.remove('hidden');
             document.getElementById('dialogue-modal').classList.add('flex');
+            
+            // 如果沒有留下金幣（生氣狀態），播放生氣低沉音效
+            if (state.tempReward === 0) {
+                setTimeout(() => AudioEngine.play('angry'), 100);
+            }
+
+            // 呼叫自動發音功能
+            playPronunciation();
         }
 
         function collectReward() {
@@ -802,7 +967,54 @@
             document.getElementById('cat-mover').classList.add('hidden');
             document.getElementById('bowl-empty').classList.remove('hidden');
             state.isCatPresent = false; state.currentCat = null;
-            AudioEngine.play('coin');
+            
+            if (state.tempReward > 0) {
+                AudioEngine.play('coin');
+            } else {
+                AudioEngine.play('wrong'); // 沒金幣時播放一個低沉的離開音效
+            }
+            
+            // 檢查是否收集完所有貓咪，且尚未觸發過通關畫面
+            if (state.discoveredCats.length === CATS.length && !state.gameCompleted) {
+                state.gameCompleted = true;
+                setTimeout(() => {
+                    document.getElementById('game-complete-modal').classList.remove('hidden');
+                    document.getElementById('game-complete-modal').classList.add('flex');
+                    state.coins += 500;
+                    updateCoinsUI();
+                    AudioEngine.play('coin');
+                }, 500);
+            }
+        }
+
+        function playAgain() {
+            AudioEngine.play('click');
+            // 重置遊戲狀態
+            state.coins = 100;
+            state.placedFood = null;
+            state.currentCat = null;
+            state.discoveredCats = [];
+            state.isCatPresent = false;
+            state.tempReward = 0;
+            state.gameCompleted = false;
+            updateCoinsUI();
+            
+            // 關閉通關視窗
+            document.getElementById('game-complete-modal').classList.add('hidden');
+            document.getElementById('game-complete-modal').classList.remove('flex');
+            
+            // 重置場景
+            document.getElementById('bowl-filled').classList.add('hidden');
+            document.getElementById('bowl-empty').classList.remove('hidden');
+            document.getElementById('cat-mover').classList.add('hidden');
+        }
+
+        function endGame() {
+            AudioEngine.play('click');
+            document.getElementById('game-complete-modal').classList.add('hidden');
+            document.getElementById('game-complete-modal').classList.remove('flex');
+            // 顯示感謝遊玩黑屏畫面
+            document.getElementById('app').innerHTML = '<div class="flex flex-col items-center justify-center h-full text-white bg-gray-900 w-full"><div class="text-6xl mb-4">🐾</div><h1 class="text-3xl font-bold mb-2">謝謝遊玩！</h1><p class="text-gray-400">期待下次相見</p></div>';
         }
 
         function toggleDex() {
@@ -831,11 +1043,13 @@
         }
 
         function playPronunciation() {
-            if (!state.currentCat) return;
-            const text = state.currentCat.dialogues[0].en;
+            // 如果沒有貓咪對話，或是玩家將遊戲設定為「靜音狀態」，則不發音
+            if (!state.currentCat || !state.currentQuoteEn || AudioEngine.isMuted) return;
+            const text = state.currentQuoteEn;
             window.speechSynthesis.cancel();
             const u = new SpeechSynthesisUtterance(text);
-            u.lang = 'en-US'; u.rate = 0.8; window.speechSynthesis.speak(u);
+            u.lang = 'en-US'; u.rate = 0.8; 
+            window.speechSynthesis.speak(u);
         }
 
         function startSakura() {
@@ -853,12 +1067,13 @@
         function startBirds() {
             setInterval(() => {
                 if(!gameStarted) return;
-                const bird = document.createElement('div'); bird.className = 'bird'; bird.innerText = '🐦';
+                const bird = document.createElement('div'); bird.className = 'bird'; bird.innerText = '🦅';
                 bird.style.top = (Math.random() * 15 + 15) + '%';
-                bird.style.left = '-20px';
-                bird.style.animation = 'flyRight 8s linear forwards';
+                // 改為從右邊飛向左邊，並將動畫時間拉長
+                bird.style.left = '100%';
+                bird.style.animation = 'flyLeft 10s linear forwards';
                 document.querySelector('main').appendChild(bird);
-                setTimeout(() => bird.remove(), 9000);
+                setTimeout(() => bird.remove(), 11000);
             }, 7000);
         }
 
